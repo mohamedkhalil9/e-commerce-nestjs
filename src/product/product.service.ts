@@ -24,8 +24,7 @@ export class ProductService {
       });
       return product;
     } catch (err) {
-      console.error(err);
-      throw new InternalServerErrorException('Error creating product');
+      throw new InternalServerErrorException(err.message);
     }
   }
 
@@ -36,8 +35,7 @@ export class ProductService {
       });
       return products;
     } catch (err) {
-      console.error(err);
-      throw new InternalServerErrorException('Error fetching products');
+      throw new InternalServerErrorException(err.message);
     }
   }
 
@@ -55,8 +53,7 @@ export class ProductService {
 
       return product;
     } catch (err) {
-      console.error(err);
-      throw new InternalServerErrorException('Error fetching product');
+      throw new InternalServerErrorException(err.message);
     }
   }
 
@@ -81,8 +78,7 @@ export class ProductService {
 
       return updatedProduct;
     } catch (err) {
-      console.error(err);
-      throw new InternalServerErrorException('Error updating product');
+      throw new InternalServerErrorException(err.message);
     }
   }
   async deleteProduct(id: string): Promise<string> {
@@ -100,8 +96,7 @@ export class ProductService {
 
       return `Product with id ${id} deleted successfully`;
     } catch (err) {
-      console.error(err);
-      throw new InternalServerErrorException('Error deleting product');
+      throw new InternalServerErrorException(err.message);
     }
   }
 }
