@@ -43,16 +43,4 @@ export class ProductService {
 
   async updateProduct() { }
   async deleteProduct() { }
-
-  async seed() {
-    const products = [
-      { name: 'Product 1', price: 100 },
-      { name: 'Product 2', price: 200 },
-      { name: 'Product 3', price: 300 },
-    ];
-
-    await this.prismaService.product.createMany({ data: products });
-
-    return { message: 'Products seeded successfully' };
-  }
 }

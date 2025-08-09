@@ -22,20 +22,14 @@ export class CategoryService {
   }
 
   async getCategories() {
-    return this.prismaService.category.findMany();
+    const categories = await this.prismaService.category.findMany();
+    return categories;
   }
 
-  async seed() {
-    const categories = [
-      { name: 'Electronics' },
-      { name: 'Books' },
-      { name: 'Clothing' },
-      { name: 'Home & Kitchen' },
-      { name: 'Sports & Outdoors' },
-    ];
-
-    await this.prismaService.category.createMany({ data: categories });
-
-    return { message: 'Categories seeded successfully' };
+  async getCategory(id: string) {
+    const category = await this.prismaService.category.findUniqueOrThrow({
+      where: { id },
+    });
+    return category;
   }
 }

@@ -34,9 +34,4 @@ export class ProductController {
 
   @Delete(':id')
   deleteProduct() { }
-
-  @Get('seed')
-  seed() {
-    return this.productService.seed();
-  }
 }
