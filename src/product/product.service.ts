@@ -1,12 +1,17 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateProductDto } from './dto';
+import { CreateProductDto, UpdateProductDto } from './dto';
+import { Product } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
   constructor(private prismaService: PrismaService) { }
 
-  async createProduct(createProductDto: CreateProductDto) {
+  async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     try {
       const product = await this.prismaService.product.create({
         data: {
@@ -18,29 +23,85 @@ export class ProductService {
         },
       });
       return product;
-    } catch (error) {
-      throw new InternalServerErrorException('Error creating product', error);
+    } catch (err) {
+      console.error(err);
+      throw new InternalServerErrorException('Error creating product');
     }
   }
 
-  async getProducts() {
-    const products = this.prismaService.product.findMany({
-      include: { category: true },
-    });
-    return products;
+  async getProducts(): Promise<Product[]> {
+    try {
+      const products = await this.prismaService.product.findMany({
+        include: { category: true },
+      });
+      return products;
+    } catch (err) {
+      console.error(err);
+      throw new InternalServerErrorException('Error fetching products');
+    }
   }
 
-  async getProduct(id: string) {
-    const product = this.prismaService.product.findUniqueOrThrow({
-      where: { id },
-      include: {
-        category: true,
-      },
-    });
+  async getProduct(id: string): Promise<Product> {
+    try {
+      const product = await this.prismaService.product.findUnique({
+        where: { id },
+        include: {
+          category: true,
+        },
+      });
 
-    return product;
+      if (!product)
+        throw new NotFoundException(`Product with id ${id} not found`);
+
+      return product;
+    } catch (err) {
+      console.error(err);
+      throw new InternalServerErrorException('Error fetching product');
+    }
   }
 
-  async updateProduct() { }
-  async deleteProduct() { }
+  async updateProduct(
+    id: string,
+    updateProductDto: UpdateProductDto,
+  ): Promise<Product> {
+    try {
+      const product = await this.prismaService.product.findUnique({
+        where: { id },
+      });
+
+      if (!product)
+        throw new NotFoundException(`Product with id ${id} not found`);
+
+      const updatedProduct = await this.prismaService.product.update({
+        where: { id },
+        data: {
+          ...updateProductDto,
+        },
+      });
+
+      return updatedProduct;
+    } catch (err) {
+      console.error(err);
+      throw new InternalServerErrorException('Error updating product');
+    }
+  }
+  async deleteProduct(id: string): Promise<string> {
+    try {
+      const product = await this.prismaService.product.findUnique({
+        where: { id },
+      });
+
+      if (!product)
+        throw new NotFoundException(`Product with id ${id} not found`);
+
+      await this.prismaService.product.delete({
+        where: { id },
+      });
+
+      return `Product with id ${id} deleted successfully`;
+    } catch (err) {
+      console.error(err);
+      throw new InternalServerErrorException('Error deleting product');
+    }
+  }
 }
