@@ -28,20 +28,20 @@ export class CategoryController {
   }
 
   @Get(':id')
-  getCategory(@Param() params: { id: string }): Promise<Category> {
-    return this.categoryService.getCategory(params.id);
+  getCategory(@Param('id') id: string): Promise<Category> {
+    return this.categoryService.getCategory(id);
   }
 
   @Patch(':id')
   updateCategory(
-    @Param() params: { id: string },
+    @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category> {
-    return this.categoryService.updateCategory(params.id, updateCategoryDto);
+    return this.categoryService.updateCategory(id, updateCategoryDto);
   }
 
   @Delete(':id')
-  deleteCategory(@Param() params: { id: string }): Promise<string> {
-    return this.categoryService.deleteCategory(params.id);
+  deleteCategory(@Param('id') id: string): Promise<string> {
+    return this.categoryService.deleteCategory(id);
   }
 }
