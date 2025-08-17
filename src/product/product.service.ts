@@ -1,4 +1,5 @@
 import {
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -40,21 +41,21 @@ export class ProductService {
   }
 
   async getProduct(id: string): Promise<Product> {
-    try {
-      const product = await this.prismaService.product.findUnique({
-        where: { id },
-        include: {
-          category: true,
-        },
-      });
+    // try {
+    const product = await this.prismaService.product.findUnique({
+      where: { id },
+      include: {
+        category: true,
+      },
+    });
 
-      if (!product)
-        throw new NotFoundException(`Product with id ${id} not found`);
+    if (!product)
+      throw new NotFoundException(`Product with id ${id} not found`);
 
-      return product;
-    } catch (err) {
-      throw new InternalServerErrorException(err.message);
-    }
+    return product;
+    // } catch (err) {
+    //   throw new InternalServerErrorException(err.message);
+    // }
   }
 
   async updateProduct(
