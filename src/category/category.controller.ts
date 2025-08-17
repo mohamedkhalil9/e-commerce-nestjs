@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -13,7 +14,7 @@ import { Category } from '@prisma/client';
 
 @Controller('categories')
 export class CategoryController {
-  constructor(private categoryService: CategoryService) { }
+  constructor(private categoryService: CategoryService) {}
 
   @Post()
   createCategory(
@@ -28,20 +29,20 @@ export class CategoryController {
   }
 
   @Get(':id')
-  getCategory(@Param('id') id: string): Promise<Category> {
+  getCategory(@Param('id', ParseUUIDPipe) id: string): Promise<Category> {
     return this.categoryService.getCategory(id);
   }
 
   @Patch(':id')
   updateCategory(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category> {
     return this.categoryService.updateCategory(id, updateCategoryDto);
   }
 
   @Delete(':id')
-  deleteCategory(@Param('id') id: string): Promise<string> {
+  deleteCategory(@Param('id', ParseUUIDPipe) id: string): Promise<string> {
     return this.categoryService.deleteCategory(id);
   }
 }
